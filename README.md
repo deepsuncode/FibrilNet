@@ -1,6 +1,6 @@
-# FibrilNet
 # Tracing Hα Fibrils through Bayesian Deep Learning
-<p>Haodi Jiang, Ju Jing, Jiasheng Wang, Chang Liu, Qin Li, Yan Xu, Jason T. L. Wang, Haimin Wang </p>
+<p>Haodi Jiang, 
+Ju Jing, Jiasheng Wang, Chang Liu, Qin Li, Yan Xu, Jason T. L. Wang, Haimin Wang </p>
 <p>Institute for Space Weather Sciences, New Jersey Institute of Technology</p>
 <p>We present a new deep-learning method, named FibrilNet, for tracing chromospheric fibrils in Hα images of solar observations. 
 Our method consists of a data preprocessing component that prepares training data from a threshold-based tool, 
