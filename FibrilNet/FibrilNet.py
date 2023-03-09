@@ -42,6 +42,7 @@ from keras.preprocessing.image import ImageDataGenerator
 sys.stderr = stderr
 matplotlib.use('TkAgg')
 from keras import backend as K
+import numpy as np
 
 
 class MaxPoolingWithArgmax2D(Layer):
@@ -81,6 +82,16 @@ class MaxPoolingWithArgmax2D(Layer):
 
     def compute_mask(self, inputs, mask=None):
         return 2 * [None]
+    
+    # Override get_config
+    def get_config(self):
+        config = super().get_config()
+        config.update({
+            "pool_size": self.pool_size,
+            "strides": self.strides,
+            "padding": self.padding,
+        })
+        return config
 
 
 class MaxUnpooling2D(Layer):
@@ -90,7 +101,7 @@ class MaxUnpooling2D(Layer):
 
     def call(self, inputs, output_shape=None):
         updates, mask = inputs[0], inputs[1]
-        with K.tf.variable_scope(self.name):
+        with K.tf.compat.v1.variable_scope(self.name):
             mask = K.cast(mask, "int32")
             input_shape = K.tf.shape(updates, out_type="int32")
             #  calculation new shape
@@ -130,7 +141,13 @@ class MaxUnpooling2D(Layer):
             mask_shape[2] * self.size[1],
             mask_shape[3],
         )
-
+    # Override get_config
+    def get_config(self):
+        config = super().get_config()
+        config.update({
+            "size": self.size,
+        })
+        return config
 
 def FibrilNet(pretrained_weights=None,input_shape=(720, 720, 1), n_labels=2, kernel=3, pool_size=(2, 2), output_mode="sigmod"):
     inputs = Input(shape=input_shape)
