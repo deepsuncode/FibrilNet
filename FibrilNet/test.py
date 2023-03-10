@@ -19,6 +19,7 @@ from FibrilNet import *
 import cv2
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 test_data_path = 'data/test/'
