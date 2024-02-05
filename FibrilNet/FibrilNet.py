@@ -60,7 +60,7 @@ class MaxPoolingWithArgmax2D(Layer):
             ksize = [1, pool_size[0], pool_size[1], 1]
             padding = padding.upper()
             strides = [1, strides[0], strides[1], 1]
-            output, argmax = K.tf.nn.max_pool_with_argmax(
+            output, argmax = tf.nn.max_pool_with_argmax(
                 inputs, ksize=ksize, strides=strides, padding=padding
             )
         else:
@@ -101,9 +101,9 @@ class MaxUnpooling2D(Layer):
 
     def call(self, inputs, output_shape=None):
         updates, mask = inputs[0], inputs[1]
-        with K.tf.compat.v1.variable_scope(self.name):
-            mask = K.cast(mask, "int32")
-            input_shape = K.tf.shape(updates, out_type="int32")
+        with tf.compat.v1.variable_scope(self.name):
+            mask = tf.cast(mask, "int32")
+            input_shape = tf.shape(updates, out_type="int32")
             #  calculation new shape
             if output_shape is None:
                 output_shape = (
@@ -115,22 +115,22 @@ class MaxUnpooling2D(Layer):
             self.output_shape1 = output_shape
 
             # calculation indices for batch, height, width and feature maps
-            one_like_mask = K.ones_like(mask, dtype="int32")
-            batch_shape = K.concatenate([[input_shape[0]], [1], [1], [1]], axis=0)
-            batch_range = K.reshape(
-                K.tf.range(output_shape[0], dtype="int32"), shape=batch_shape
+            one_like_mask = tf.ones_like(mask, dtype="int32")
+            batch_shape = tf.concat([[input_shape[0]], [1], [1], [1]], axis=0)
+            batch_range = tf.reshape(
+                tf.range(output_shape[0], dtype="int32"), shape=batch_shape
             )
             b = one_like_mask * batch_range
             y = mask // (output_shape[2] * output_shape[3])
             x = (mask // output_shape[3]) % output_shape[2]
-            feature_range = K.tf.range(output_shape[3], dtype="int32")
+            feature_range = tf.range(output_shape[3], dtype="int32")
             f = one_like_mask * feature_range
 
             # transpose indices & reshape update values to one dimension
-            updates_size = K.tf.size(updates)
-            indices = K.transpose(K.reshape(K.stack([b, y, x, f]), [4, updates_size]))
-            values = K.reshape(updates, [updates_size])
-            ret = K.tf.scatter_nd(indices, values, output_shape)
+            updates_size = tf.size(updates)
+            indices = tf.transpose(tf.reshape(tf.stack([b, y, x, f]), [4, updates_size]))
+            values = tf.reshape(updates, [updates_size])
+            ret = tf.scatter_nd(indices, values, output_shape)
             return ret
 
     def compute_output_shape(self, input_shape):
